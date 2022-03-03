@@ -18,14 +18,23 @@ static const int kUnpackerBufferSize = 1024;
 @implementation MessagePackParser (Streaming)
 
 - (id)init {
-    return [self initWithBufferSize:kUnpackerBufferSize];
+	self = [super init];
+	
+	[self setupWithBufferSize: kUnpackerBufferSize];
+	
+	return self;
 }
 
 - (id)initWithBufferSize:(int)bufferSize {
-    if (self = [super init]) {
-        msgpack_unpacker_init(&unpacker, bufferSize);
-    }
-    return self;
+	self = [super init];
+	
+	[self setupWithBufferSize: bufferSize];
+	
+	return self;
+}
+
+- (void)setupWithBufferSize:(int)bufferSize {
+	msgpack_unpacker_init(&unpacker, bufferSize);
 }
 
 // Feed chunked messagepack data into buffer.
