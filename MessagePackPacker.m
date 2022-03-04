@@ -60,12 +60,16 @@
 // Pack a single object into the given packer
 + (void)packObject:(id)obj into:(msgpack_packer*)pk {
 	if ([obj isKindOfClass:[NSArray class]]) {
-		msgpack_pack_array(pk, (int)((NSArray*)obj).count);
+		NSUInteger length = ((NSArray*)obj).count;
+		NSAssert(length < UINT32_MAX, @"Exceeded maximum array length.");
+		msgpack_pack_array(pk, (UInt32)length);
 		for (id arrayElement in obj) {
 			[self packObject:arrayElement into:pk];
 		}
 	} else if ([obj isKindOfClass:[NSDictionary class]]) {
-		msgpack_pack_map(pk, (int)((NSDictionary*)obj).count);
+		NSUInteger length = ((NSDictionary*)obj).count;
+		NSAssert(length < UINT32_MAX, @"Exceeded maximum array length.");
+		msgpack_pack_map(pk, (UInt32)length);
 		for(id key in obj) {
 			[self packObject:key into:pk];
 			[self packObject:[obj objectForKey:key] into:pk];
